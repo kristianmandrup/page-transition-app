@@ -1,11 +1,7 @@
 import { writable } from "svelte/store";
 import { activeRoute, pendingRoute } from "@roxi/routify";
 
-type BeforeNavigate = ({ from, to }) => void;
-
-export const beforeNavigate = (fn: BeforeNavigate) => {
-  // TODO
-};
+type BeforeNavigate = ({ from, to }: Navigating) => void;
 
 export type Navigating = {
   from?: URL;
@@ -32,3 +28,9 @@ pendingRoute.subscribe((route) => {
     to: new URL(route.url),
   }));
 });
+
+export const beforeNavigate = (fn: BeforeNavigate) => {
+  navigating.subscribe((nav) => {
+    fn({ ...nav });
+  });
+};

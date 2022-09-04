@@ -1,10 +1,10 @@
-import { beforeNavigate, navigating } from "./navigating";
+import { beforeNavigate, Navigating, navigating } from "./navigating";
 import { onDestroy } from "svelte";
 import reducedMotion from "./reduced-motion";
 
 type Payload = {
-  from: URL;
-  to: URL;
+  from?: URL;
+  to?: URL;
   type: string | null;
 };
 
@@ -94,13 +94,13 @@ export const preparePageTransition = (getType = (_from, _to) => null) => {
   );
 
   // before navigating, start a new transition
-  beforeNavigate(({ from, to }) => {
+  beforeNavigate(({ from, to }: Navigating) => {
     // Feature detection
     if (!(document as any).createDocumentTransition || isReducedMotionEnabled) {
       return;
     }
 
-    const type = getType(from.pathname, to?.pathname ?? "");
+    const type = getType(from?.pathname, to?.pathname ?? "");
     try {
       const transition = (document as any).createDocumentTransition();
       const payload: Payload = { from, to, type };
